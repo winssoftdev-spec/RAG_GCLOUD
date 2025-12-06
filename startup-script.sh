@@ -49,49 +49,35 @@ sleep 5
 
 # 5. Pull the Llama 3.2 model
 echo "Pulling Llama 3.2 model..."
+export HOME=/root
 nohup ollama pull llama3.2 > /tmp/ollama_pull.log 2>&1 &
 
-# 6. Setup Application
-APP_DIR="/opt/sql-backend"
+# 6. Run Application from Artifact Registry
+# Fetch Project ID from Metadata
+PROJECT_ID=$(curl -s "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
+REGION="us-central1"
+REPO_NAME="rag-repo"
+IMAGE_NAME="sql-backend"
+TAG="latest"
+FULL_IMAGE_PATH="$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:$TAG"
 
-# NOTE: You need to decide how code gets here. 
-# Option A: Git Clone (Uncomment and fill details)
-echo "Cloning repository..."
-sudo git clone https://github.com/winssoftdev-spec/RAG_GCLOUD.git $APP_DIR
+echo "Project ID: $PROJECT_ID"
+echo "Configuring Docker for GCP..."
+gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
 
-# Option B: Assume files are uploaded via GCE Metadata or SCP.
-# For this script, we'll assume the user might manually place files or use another method. 
-# IF testing manually, just copy files to $APP_DIR.
-# But to make this script robust for a demo, let's create the directory.
-sudo mkdir -p $APP_DIR
+# Remove existing container if it exists
+sudo docker rm -f sql-backend-container || true
 
-# ------------------------------------------------------------------
-# IMPORTANT: 
-# Since I cannot know your Git repo URL, I am assuming you will 
-# either upload the files or edit this script to clone your repo.
-# 
-# For now, I will assume the files are already in $APP_DIR or 
-# you will run this script AFTER copying files.
-# 
-# IF YOU WANT THE SCRIPT TO RUN AUTOMATICALLY ON BOOT AND PULL CODE:
-# Uncomment the git clone section above.
-# ------------------------------------------------------------------
+echo "Pulling image: $FULL_IMAGE_PATH"
+# We need to loop pull in case the image isn't ready yet or auth takes a moment
+until sudo docker pull $FULL_IMAGE_PATH; do
+    echo "Docker pull failed. Retrying in 10 seconds..."
+    sleep 10
+done
 
-cd $APP_DIR
-
-# Check if Dockerfile exists before building
-if [ -f "Dockerfile" ]; then
-    echo "Building Docker image..."
-    sudo docker build -t sql-backend .
-
-    echo "Running Application..."
-    # Running with --network host so it can access Ollama on localhost:11434 easily
-    # (Since we also bound Ollama to 0.0.0.0, we could use bridge networking too, but host is simplest here)
-    sudo docker run -d \
-        --name sql-backend-container \
-        --network host \
-        --restart always \
-        sql-backend
-else
-    echo "Dockerfile not found in $APP_DIR. Please ensure code is deployed."
-fi
+echo "Running Application..."
+sudo docker run -d \
+    --name sql-backend-container \
+    --network host \
+    --restart always \
+    $FULL_IMAGE_PATH

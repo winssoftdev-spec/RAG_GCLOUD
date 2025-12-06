@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routes.sql_generator import router
+from routes.sql_generator import router
 
 app = FastAPI(
     title="SQL Generator Backend",
