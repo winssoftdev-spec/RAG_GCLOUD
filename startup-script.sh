@@ -49,7 +49,7 @@ sleep 5
 
 # 5. Pull the Llama 3.2 model
 echo "Pulling Llama 3.2 model..."
-ollama pull llama3.2
+nohup ollama pull llama3.2 > /tmp/ollama_pull.log 2>&1 &
 
 # 6. Setup Application
 APP_DIR="/opt/sql-backend"
