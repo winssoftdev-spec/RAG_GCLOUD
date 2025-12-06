@@ -5,7 +5,7 @@ class SQLRequest(BaseModel):
     user_api_key: str
     user_query: str
     table_schema: Union[Dict[str, List[str]], str]
-    model_id: str
+    # model_id: str
 
 
 class SQLResponse(BaseModel):
