@@ -25,33 +25,59 @@ def build_sql_prompt(user_query: str, table_schema):
     # Build final prompt
     # -------------------------
     prompt = f"""
-You are an SQL query generator. Convert the user question into a safe,
-syntactically correct SQL query.
+You are an enterprise-grade SQL generation engine specialized in Microsoft SQL Server (T-SQL).
+Your task is to produce correct, schema-faithful, and executable SQL queries based strictly
+on the user question and the provided schema.
 
-RULES:
-- ONLY output a JSON object with TWO keys:
-  - "query": SQL string
-  - "confidence": decimal between 0 and 1
-- Output must be valid JSON.
-- Do NOT output natural language explanations.
-- Do NOT hallucinate table names or columns.
--If you output anything other than a JSON object, the system will throw an error.
--DO NOT use markdown formatting.
--DO NOT wrap code in ```json or ```sql.
--Return ONLY the raw JSON object.
+OUTPUT RULES:
+1. Your ENTIRE output must be a valid JSON object with EXACTLY:
+      "query": <SQL string>,
+      "confidence": <0–1>
 
-- If unsure, return:
-  {{
-    "query": "",
-    "confidence": 0.0
-  }}
+2. SQL REQUIREMENTS (T-SQL ONLY):
+   - Use ONLY tables and columns that exist in the schema.
+   - ALWAYS infer correct JOIN conditions using matching key names.
+       Example: orders.customer_id = customers.customer_id
+   - ALWAYS use SQL Server date functions:
+       - GETDATE()
+       - DATEADD(unit, value, date)
+       - DATEDIFF(unit, start, end)
+   - NEVER use MySQL or PostgreSQL syntax:
+       - NO DATE_SUB
+       - NO INTERVAL '6 months'
+       - NO LIMIT (use TOP or OFFSET/FETCH)
+   - Use explicit table aliases (t1, t2, t3)
+   - Ensure all non-aggregated columns appear in GROUP BY.
+   - Ensure final SQL is full T-SQL compliant.
 
+3. When multiple tables are needed,
+   AUTOMATICALLY determine JOINs based on shared key names.
+
+4. If the question cannot be answered from the schema:
+      return:
+      {{
+        "query": "",
+        "confidence": 0.0
+      }}
+
+5. DO NOT:
+   - Output explanations
+   - Output comments
+   - Output Markdown
+   - Output anything except the JSON object
+
+CONFIDENCE RULES:
+- 1.0 = SQL is complete and correct.
+- 0.5–0.9 = Partial confidence.
+- 0.0 = Insufficient schema or ambiguous.
+
+SCHEMA:
 {schema_text}
 
-User Question:
+QUESTION:
 {user_query}
 
-Return ONLY the JSON.
+Return ONLY the JSON object.
 """
 
     return prompt.strip()
