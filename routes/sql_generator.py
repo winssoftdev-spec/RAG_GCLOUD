@@ -30,7 +30,7 @@ async def generate_sql(req: SQLRequest, request: Request):
 
     prompt = build_sql_prompt(req.user_query, req.table_schema)
 
-    model = req.model_id
+    model = req.model_id or DEFAULT_MODEL
    
     result = query_ollama_with_client(prompt, model)
 
