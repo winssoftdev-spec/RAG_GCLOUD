@@ -8,8 +8,8 @@ logging.basicConfig(level=LOG_LEVEL)
 request_logger = logging.getLogger("request_logger")
 response_logger = logging.getLogger("response_logger")
 
-req_handler = logging.FileHandler("app/logs/requests.log")
-res_handler = logging.FileHandler("app/logs/responses.log")
+req_handler = logging.FileHandler("logs/requests.log")
+res_handler = logging.FileHandler("logs/responses.log")
 
 req_handler.setFormatter(logging.Formatter("%(message)s"))
 res_handler.setFormatter(logging.Formatter("%(message)s"))
