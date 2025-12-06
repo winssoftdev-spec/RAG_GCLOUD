@@ -56,8 +56,8 @@ APP_DIR="/opt/sql-backend"
 
 # NOTE: You need to decide how code gets here. 
 # Option A: Git Clone (Uncomment and fill details)
-# echo "Cloning repository..."
-# sudo git clone https://github.com/YOUR_REPO/sql-backend.git $APP_DIR
+echo "Cloning repository..."
+sudo git clone  https://github.com/winssoftdev-spec/RAG_GCLOUD.git$APP_DIR
 
 # Option B: Assume files are uploaded via GCE Metadata or SCP.
 # For this script, we'll assume the user might manually place files or use another method. 
