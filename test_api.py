@@ -15,7 +15,8 @@ payload = {
         "order_items": ["order_item_id", "order_id", "product_id", "quantity", "unit_price"],
         "products": ["product_id", "product_name", "category", "price"],
         "payments": ["payment_id", "order_id", "payment_date", "amount"]
-    }
+    },
+    "model_id": "llama3.2"
 }
 
 print(f"Sending POST request to {URL}...")

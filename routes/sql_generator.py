@@ -22,14 +22,15 @@ async def generate_sql(req: SQLRequest, request: Request):
         "path": request.url.path,
         "user_api_key": req.user_api_key,
         "user_query": req.user_query,
-        "table_schema": req.table_schema
+        "table_schema": req.table_schema,
+        "model_id": req.model_id
     })
 
     start_time = time.time()
 
     prompt = build_sql_prompt(req.user_query, req.table_schema)
 
-    model = req.model_id or DEFAULT_MODEL
+    model = req.model_id
    
     result = query_ollama_with_client(prompt, model)
 
