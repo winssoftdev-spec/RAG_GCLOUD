@@ -22,8 +22,7 @@ async def generate_sql(req: SQLRequest, request: Request):
         "path": request.url.path,
         "user_api_key": req.user_api_key,
         "user_query": req.user_query,
-        "table_schema": req.table_schema,
-        "model_id": req.model_id
+        "table_schema": req.table_schema
     })
 
     start_time = time.time()
