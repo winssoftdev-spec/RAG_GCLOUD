@@ -1,10 +1,10 @@
 import time
 from fastapi import APIRouter, Request
-from ..models import SQLRequest, SQLResponse
-from ..prompts import build_sql_prompt
-from ..ollama_client import query_ollama_with_client
-from ..logger import log_request, log_response
-from ..config import DEFAULT_MODEL
+from models import SQLRequest, SQLResponse
+from prompts import build_sql_prompt
+from ollama_client import query_ollama_with_client
+from logger import log_request, log_response
+from config import DEFAULT_MODEL
 
 router = APIRouter()
 @router.get("/health")
