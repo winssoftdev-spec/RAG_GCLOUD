@@ -4,6 +4,7 @@ from models import SQLRequest, SQLResponse
 from prompts import build_sql_prompt
 from ollama_client import query_ollama_with_client
 from logger import log_request, log_response
+from Gemini_client import query_gemini
 from config import DEFAULT_MODEL
 
 router = APIRouter()
@@ -32,6 +33,7 @@ async def generate_sql(req: SQLRequest, request: Request):
     model = req.model_id or DEFAULT_MODEL
    
     result = query_ollama_with_client(prompt, model)
+    # result = query_gemini(prompt)  # Use Gemini client
 
 
     sql = result["query"]
