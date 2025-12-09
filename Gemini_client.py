@@ -58,5 +58,6 @@ def query_gemini(prompt: str, model: str = "gemini-2.5-flash"):
         "query": parsed.get("query", ""),
         "confidence": parsed.get("confidence", 0.0),
         # Access token counts from the response object metadata
-        "tokens": response.usage_metadata.prompt_token_count if response.usage_metadata else 0
+        "Sent_tokens": None
+        "genrated_tokens": None
     }

@@ -61,6 +61,8 @@ def query_ollama_with_client(prompt: str, model: str):
     return {
         "query": parsed.get("query", ""),
         "confidence": parsed.get("confidence", 0.0),
-        "tokens": response.get("eval_count", 0)  # ollama token count
+        "Sent_tokens": response.get("prompt_eval_count", 0),  # ollama token count
+        "Generated_tokens": response.get("eval_count", 0)  # ollama token count
+
         # "raw_output":raw_output
     }

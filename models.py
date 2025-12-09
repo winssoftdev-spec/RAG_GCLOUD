@@ -11,6 +11,7 @@ class SQLRequest(BaseModel):
 class SQLResponse(BaseModel):
     sql_query: str
     confidence: float
+    tokens_sent: int
     tokens_generated: int
     latency_ms: float
     # model_prompt:str

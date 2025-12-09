@@ -38,7 +38,8 @@ async def generate_sql(req: SQLRequest, request: Request):
 
     sql = result["query"]
     conf = result["confidence"]
-    tokens = result["tokens"]
+    ip_tokens = result["Sent_tokens"]
+    op_tokens = result["generated_tokens"]
     # raw_op = result["raw_output"]
 
     latency_ms = round((time.time() - start_time) * 1000, 2)
@@ -50,14 +51,16 @@ async def generate_sql(req: SQLRequest, request: Request):
         "event": "response_sent",
         "sql_query": sql,
         "confidence": conf,
-        "tokens_generated": tokens,
+        "tokens_sent": ip_tokens,
+        "tokens_generated": op_tokens,
         "latency_ms": latency_ms
     })
 
     return SQLResponse(
         sql_query=sql,
         confidence=conf,
-        tokens_generated=tokens,
+        tokens_sent=ip_tokens,
+        tokens_generated=op_tokens,
         latency_ms=latency_ms,
         # model_prompt=raw_op
     )
