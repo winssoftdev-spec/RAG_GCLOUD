@@ -4,7 +4,7 @@ from typing import Dict, List, Union, Any
 class SQLRequest(BaseModel):
     user_api_key: str
     user_query: str
-    table_schema: Union[Dict[str, List[str]], str]
+    table_schema: dict[str, list[str] | dict]
     model_id: str
 
 

@@ -33,13 +33,15 @@ async def generate_sql(req: SQLRequest, request: Request):
     model = req.model_id or DEFAULT_MODEL
    
     result = query_ollama_with_client(prompt, model)
+    print("Using Ollama model:", model)
     # result = query_gemini(prompt)  # Use Gemini client
+    # print("Using Gemini client")
 
 
     sql = result["query"]
     conf = result["confidence"]
     ip_tokens = result["Sent_tokens"]
-    op_tokens = result["generated_tokens"]
+    op_tokens = result["Generated_tokens"]
     # raw_op = result["raw_output"]
 
     latency_ms = round((time.time() - start_time) * 1000, 2)
